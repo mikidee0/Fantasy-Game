@@ -8,7 +8,9 @@ html,
 body {
     width: 100%;
     height: 100%;
+    height: 100dvh;
     overflow: hidden;
+    overscroll-behavior: none;
     background: #111;
 }
 
@@ -25,6 +27,18 @@ body {
     aspect-ratio: 1000 / 600;
 
     max-height: 100vh;
+    max-height: 100dvh;
+}
+
+/* Small phones in landscape are often shorter than they are wide,
+   so let height drive the size instead of width once we run out
+   of vertical space. */
+@media (max-height: 500px) and (orientation: landscape) {
+    .game-container {
+        width: auto;
+        height: 100dvh;
+        max-width: 100vw;
+    }
 }
 
 #gameCanvas {
@@ -55,8 +69,10 @@ body {
 
 .touch-btn {
 
-    width: 65px;
-    height: 65px;
+    /* Scale with the viewport so buttons stay usable on small phones
+       and don't get oversized on tablets. */
+    width: clamp(48px, 11vw, 70px);
+    height: clamp(48px, 11vw, 70px);
 
     border-radius: 18px;
 
@@ -66,11 +82,15 @@ body {
 
     color:white;
 
-    font-size:28px;
+    font-size: clamp(20px, 5vw, 28px);
 
     pointer-events:auto;
 
     touch-action:none;
+
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 
@@ -78,12 +98,12 @@ body {
 
     position:absolute;
 
-    left:20px;
-    bottom:20px;
+    left: max(20px, env(safe-area-inset-left));
+    bottom: max(20px, env(safe-area-inset-bottom));
 
     display:flex;
 
-    gap:15px;
+    gap: clamp(10px, 3vw, 15px);
 
 }
 
@@ -92,8 +112,8 @@ body {
 
     position:absolute;
 
-    right:20px;
-    bottom:20px;
+    right: max(20px, env(safe-area-inset-right));
+    bottom: max(20px, env(safe-area-inset-bottom));
 
 }
 
@@ -122,6 +142,8 @@ body {
 
         display:flex;
 
+        flex-direction: column;
+
         position:fixed;
 
         inset:0;
@@ -140,8 +162,34 @@ body {
 
         padding:30px;
 
-        font-size:24px;
+        gap: 24px;
+
+        font-size: clamp(18px, 5vw, 24px);
 
     }
 
+}
+
+#landscapeBtn {
+
+    padding: 14px 28px;
+
+    border-radius: 12px;
+
+    border: 2px solid rgba(255,255,255,0.5);
+
+    background: #7b2ff7;
+
+    color: white;
+
+    font-size: 18px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+#landscapeBtn:active {
+    background: #6321cf;
 }

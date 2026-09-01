@@ -310,6 +310,49 @@ if (jumpBtn) {
     jumpBtn.addEventListener("contextmenu", (event) => event.preventDefault());
 }
 
+/* ==========================
+   AUTO LANDSCAPE (mobile)
+   ========================== */
+
+const landscapeBtn = document.getElementById("landscapeBtn");
+const gameContainer = document.querySelector(".game-container");
+
+async function goLandscape() {
+    try {
+        // Fullscreen is required by most browsers before an orientation
+        // lock request will be honored.
+        if (gameContainer.requestFullscreen) {
+            await gameContainer.requestFullscreen();
+        } else if (gameContainer.webkitRequestFullscreen) {
+            await gameContainer.webkitRequestFullscreen();
+        }
+    } catch (_) {
+        // Fullscreen denied or unsupported — still try to lock orientation.
+    }
+
+    try {
+        if (screen.orientation && screen.orientation.lock) {
+            await screen.orientation.lock("landscape");
+        }
+    } catch (_) {
+        // Orientation Lock API isn't supported on this browser (e.g. iOS
+        // Safari). Nothing more we can do programmatically — the on-screen
+        // message still tells the player to rotate manually.
+    }
+}
+
+if (landscapeBtn) {
+    landscapeBtn.addEventListener("click", goLandscape);
+}
+
+// If we already have a lock and the device rotates back to portrait
+// (e.g. user exits fullscreen), release the lock so it doesn't get stuck.
+document.addEventListener("fullscreenchange", () => {
+    if (!document.fullscreenElement && screen.orientation && screen.orientation.unlock) {
+        try { screen.orientation.unlock(); } catch (_) {}
+    }
+});
+
 // Prevent accidental browser gestures while playing.
 document.addEventListener("touchstart", (event) => {
     if (event.target.closest(".mobile-controls")) {
@@ -366,19 +409,6 @@ document.addEventListener("keydown", (event) => {
             player.grounded = false;
             player.jumpsRemaining--;
         }
-    }
-
-});
-
-
-// ==========================
-// RESTART KEY (separate listener — was nested inside jump before)
-// ==========================
-
-document.addEventListener("keydown", (event) => {
-
-    if ((gameWon || gameOver) && event.key.toLowerCase() === "r") {
-        restartGame();
     }
 
 });
