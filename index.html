@@ -13,6 +13,16 @@
 
     <main class="game-container">
         <canvas id="gameCanvas"></canvas>
+
+        <!-- Mobile touch controls -->
+        <div class="mobile-controls" aria-label="Mobile game controls">
+            <div class="movement-controls">
+                <button class="touch-btn" id="leftBtn" aria-label="Move left">◀</button>
+                <button class="touch-btn" id="rightBtn" aria-label="Move right">▶</button>
+            </div>
+
+            <button class="touch-btn jump-btn" id="jumpBtn" aria-label="Jump">▲</button>
+        </div>
     </main>
 
     <script src="Game.js"></script>

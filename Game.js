@@ -214,6 +214,73 @@ const keys = {
     right: false
 };
 
+
+/* ==========================
+   MOBILE TOUCH CONTROLS
+   ========================== */
+
+function setupTouchButton(buttonId, keyName) {
+    const button = document.getElementById(buttonId);
+    if (!button) return;
+
+    const press = (event) => {
+        event.preventDefault();
+        keys[keyName] = true;
+        if (button.setPointerCapture && event.pointerId !== undefined) {
+            try { button.setPointerCapture(event.pointerId); } catch (_) {}
+        }
+    };
+
+    const release = (event) => {
+        event.preventDefault();
+        keys[keyName] = false;
+    };
+
+    button.addEventListener("pointerdown", press, { passive: false });
+    button.addEventListener("pointerup", release, { passive: false });
+    button.addEventListener("pointercancel", release, { passive: false });
+    button.addEventListener("pointerleave", release, { passive: false });
+    button.addEventListener("contextmenu", (event) => event.preventDefault());
+}
+
+setupTouchButton("leftBtn", "left");
+setupTouchButton("rightBtn", "right");
+
+const jumpBtn = document.getElementById("jumpBtn");
+
+if (jumpBtn) {
+    const mobileJump = (event) => {
+        event.preventDefault();
+
+        // One press = one jump, including the second jump.
+        if (player.jumpsRemaining > 0 && !gameOver && !gameWon) {
+            player.velocityY = -player.jumpPower;
+            player.grounded = false;
+            player.jumpsRemaining--;
+        }
+
+        if (jumpBtn.setPointerCapture && event.pointerId !== undefined) {
+            try { jumpBtn.setPointerCapture(event.pointerId); } catch (_) {}
+        }
+    };
+
+    jumpBtn.addEventListener("pointerdown", mobileJump, { passive: false });
+    jumpBtn.addEventListener("contextmenu", (event) => event.preventDefault());
+}
+
+// Prevent accidental browser gestures while playing.
+document.addEventListener("touchstart", (event) => {
+    if (event.target.closest(".mobile-controls")) {
+        event.preventDefault();
+    }
+}, { passive: false });
+
+document.addEventListener("touchmove", (event) => {
+    if (event.target.closest(".game-container")) {
+        event.preventDefault();
+    }
+}, { passive: false });
+
 document.addEventListener("keydown", (event) => {
 
     if (event.key === "ArrowLeft" || event.key.toLowerCase() === "a") {
