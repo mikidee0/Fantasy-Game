@@ -118,7 +118,7 @@ body {
 }
 
 
-@media(max-width:768px){
+@media (max-width:768px), (pointer: coarse) {
 
     .mobile-controls{
         display:block;
@@ -136,7 +136,8 @@ body {
 }
 
 
-@media(max-width:768px) and (orientation:portrait){
+@media (max-width:768px) and (orientation:portrait),
+       (pointer: coarse) and (orientation:portrait) {
 
     #rotateMessage{
 
