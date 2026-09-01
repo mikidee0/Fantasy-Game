@@ -200,6 +200,14 @@ const portal = {
 };
 
 let gameWon = false;
+const restartButton = {
+
+    x:390,
+    y:330,
+    width:220,
+    height:60
+
+};
 let enteringPortal = false;
 let portalTimer = 0;
 let portalPulse = 0;
@@ -213,6 +221,40 @@ const keys = {
     left: false,
     right: false
 };
+
+canvas.addEventListener("pointerdown",(event)=>{
+
+    if(!gameWon && !gameOver) return;
+
+
+    const rect = canvas.getBoundingClientRect();
+
+
+    const x =
+    (event.clientX - rect.left) *
+    (canvas.width / rect.width);
+
+
+    const y =
+    (event.clientY - rect.top) *
+    (canvas.height / rect.height);
+
+
+
+    if(
+
+        x > restartButton.x &&
+        x < restartButton.x + restartButton.width &&
+        y > restartButton.y &&
+        y < restartButton.y + restartButton.height
+
+    ){
+
+        restartGame();
+
+    }
+
+});
 
 
 /* ==========================
@@ -1390,6 +1432,30 @@ function restartGame() {
     portalTimer = 0;
 }
 
+function drawRestartButton(text){
+
+    ctx.fillStyle="#7b2ff7";
+
+    ctx.fillRect(
+        restartButton.x,
+        restartButton.y,
+        restartButton.width,
+        restartButton.height
+    );
+
+
+    ctx.fillStyle="white";
+
+    ctx.font="bold 24px Arial";
+
+    ctx.fillText(
+        text,
+        restartButton.x + 35,
+        restartButton.y + 38
+    );
+
+}
+
 //============
 //GAME LOOP
 //============
@@ -1428,7 +1494,7 @@ function gameLoop() {
         ctx.fillText("YOU WIN!", 380, 250);
 
         ctx.font = "24px Arial";
-        ctx.fillText("Press R to play again", 390, 300);
+        drawRestartButton("PLAY AGAIN");
     }
 
     if (gameOver) {
@@ -1441,7 +1507,7 @@ function gameLoop() {
 
         ctx.fillStyle = "white";
         ctx.font = "24px Arial";
-        ctx.fillText("Press R to try again", 390, 300);
+        drawRestartButton("TRY AGAIN");
     }
 
     requestAnimationFrame(gameLoop);
